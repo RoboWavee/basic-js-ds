@@ -15,7 +15,7 @@ class BinarySearchTree {
   }
 
   add(data) {
-    this._root = this._addNoode(this._root, data);
+    this._root = this._addNode(this._root, data);
   }
 
   _addNode(node, data) {
