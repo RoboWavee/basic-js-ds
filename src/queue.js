@@ -17,43 +17,36 @@ class Queue {
    constructor() {
     this.head = null; 
     this.tail = null;
-    this.length = 0;
-  }
-
-  getUnderlyingList() {
-    return this.head;
   }
 
   enqueue(value) {
-    const newNode = new ListNode(value);
-     if (this.tail === null) {
-      // Queue is empty, both head and tail point to new node
+     const newNode = new ListNode(value);
+    
+    if (this.tail === null) {
       this.head = newNode;
       this.tail = newNode;
     } else {
-      // Add to the end and update tail
       this.tail.next = newNode;
       this.tail = newNode;
     }
-    this.length++;
   }
 
   dequeue() {
-    if (this.head === null) {
-      return null; // or throw error depending on requirements
+   if (this.head === null) {
+      return undefined; 
     }
-    
-    const dequeuedValue = this.head.value;
+    const value = this.head.value;
     this.head = this.head.next;
-    
-    // If queue becomes empty, update tail as well
-    if (this.head === null) {
+   if (this.head === null) {
       this.tail = null;
     }
-    
-    this.length--;
-    return dequeuedValue;
+    return value;
   }
+
+ getUnderlyingList() {
+    return this.head;
+  }
+
 }
 
 module.exports = {
