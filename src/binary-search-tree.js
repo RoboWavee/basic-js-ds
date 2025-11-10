@@ -1,12 +1,12 @@
 const { NotImplementedError } = require('../lib/errors');
-// const { Node } = require('../extensions/list-tree.js');
+const { Node } = require('../extensions/list-tree.js');
 
 /**
 * Implement simple binary search tree according to task description
 * using Node from extensions
 */
 class BinarySearchTree {
-  constructor() {
+   constructor() {
     this._root = null;
   }
 
@@ -15,94 +15,89 @@ class BinarySearchTree {
   }
 
   add(data) {
-    this._root = this._addNode(this._root, data);
-  }
+    const newNode = new Node(data);
 
-  _addNode(node, data) {
-    if (node === null) {
-      return new Node(data);
+    if (!this._root) {
+      this._root = newNode;
+      return;
     }
 
-    if (data < node.data) {
-      node.left = this._addNode(node.left, data);
-    } else if (data > node.data) {
-      node.right = this._addNode(node.right, data);
-    }
-    return node;
-  }
+    let current = this._root;
+    while (true) {
+      if (data === current.data) return; 
 
-  find(data) {
-    return this._findNode(this._root, data);
-  }
-
-  _findNode(node, data) {
-    if (node === null) {
-      return null;
-    }
-    if (data === node.data) {
-      return node;
-    } else if (data < node.data) {
-      return this._findNode(node.left, data);
-    } else {
-      return this._findNode(node.right, data);
+      if (data < current.data) {
+        if (!current.left) {
+          current.left = newNode;
+          return;
+        }
+        current = current.left;
+      } else {
+        if (!current.right) {
+          current.right = newNode;
+          return;
+        }
+        current = current.right;
+      }
     }
   }
 
   has(data) {
-    return this.find(data) !== null;
+    return !!this.find(data);
   }
 
-  remove(/* data */) {
-    this._root = this._removeNode(this._root, data);
-  }
-
-  _removeNode(node, data) {
-    if (node === null) {
-      return null;
+  find(data) {
+    let current = this._root;
+    while (current) {
+      if (data === current.data) return current;
+      current = data < current.data ? current.left : current.right;
     }
-    if (data < node.data) {
-      node.left = this._removeNode(node.left, data);
-      return node;
-    } else if (data > node.data) {
-      node.right = this._removeNode(node.right, data);
-      return node;
-    } else {
-      if (node.left === null && node.right === null) {
-        return null;
+    return null;
+  }
+
+  remove(data) {
+    this._root = removeNode(this._root, data);
+
+    function removeNode(node, data) {
+      if (!node) return null;
+
+      if (data < node.data) {
+        node.left = removeNode(node.left, data);
+        return node;
+      } else if (data > node.data) {
+        node.right = removeNode(node.right, data);
+        return node;
+      } else {
+     
+        if (!node.left && !node.right) return null;
+        if (!node.left) return node.right;
+        if (!node.right) return node.left;
+
+       
+        let minRight = node.right;
+        while (minRight.left) {
+          minRight = minRight.left;
+        }
+        node.data = minRight.data;
+        node.right = removeNode(node.right, minRight.data);
+        return node;
       }
-      if (node.left === null) {
-        return node.right;
-      }
-      if (node.right === null) {
-        return node.left;
-      }
-      let tempNode = node.right;
-      while (tempNode.left !== null) {
-        tempNode = tempNode.left;
-      }
-      node.data = tempNode.data;
-      node.right = this._removeNode(node.right, tempNode.data);
-      return node;
     }
   }
 
   min() {
-    if (this._root === null) {
-      return null;
-    }
+    if (!this._root) return null;
     let current = this._root;
-    while (current.left !== null) {
+    while (current.left) {
       current = current.left;
     }
     return current.data;
   }
 
   max() {
-     if (this._root === null) {
-      return null;
-    }
+    if (!this._root) return null;
     let current = this._root;
-    while (current.right !== null) {
+    while (current.right) {
       current = current.right;
     }
     return current.data;
